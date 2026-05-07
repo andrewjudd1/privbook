@@ -150,10 +150,60 @@
         const images = renderImages(post);
         if (images) article.appendChild(images);
 
+        if ((post.images?.length ?? 0) > 1) {
+            article.appendChild(renderLayoutEditor(post, article));
+        }
+
         const books = renderBooks(post, article);
         article.appendChild(books);
 
         return article;
+    }
+
+    const LAYOUT_OPTIONS = [
+        ['auto', 'Layout: auto'],
+        ['grid', 'Grid'],
+        ['collage', 'Collage'],
+        ['single', 'Stack'],
+    ];
+
+    function renderLayoutEditor(post, article) {
+        const wrap = document.createElement('div');
+        wrap.className = 'post-layout-edit';
+
+        const sel = document.createElement('select');
+        sel.className = 'layout-select';
+        sel.title = 'How to lay out these photos';
+        for (const [val, label] of LAYOUT_OPTIONS) {
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = label;
+            sel.appendChild(opt);
+        }
+        sel.value = post.layout || 'auto';
+
+        sel.addEventListener('change', async () => {
+            const next = sel.value;
+            const prev = post.layout || 'auto';
+            if (next === prev) return;
+            sel.disabled = true;
+            try {
+                const data = await window.api.patch(`/api/posts/${post.id}`, { layout: next });
+                post.layout = data.post.layout;
+                const oldImages = article.querySelector('.post-images');
+                const fresh = renderImages(post);
+                if (oldImages && fresh) oldImages.replaceWith(fresh);
+                window.toast?.info('Layout updated.');
+            } catch (err) {
+                sel.value = prev;
+                window.toast?.error(err.message || 'Could not update layout.');
+            } finally {
+                sel.disabled = false;
+            }
+        });
+
+        wrap.appendChild(sel);
+        return wrap;
     }
 
     function renderBooks(post, article) {
