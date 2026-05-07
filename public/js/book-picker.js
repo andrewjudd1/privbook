@@ -65,6 +65,7 @@ window.bookPicker = (() => {
 
         document.body.appendChild(overlay);
         requestAnimationFrame(() => overlay.classList.add('open'));
+        window.scrollLock?.lock();
 
         function renderList() {
             list.innerHTML = '';
@@ -132,10 +133,12 @@ window.bookPicker = (() => {
             createBook(name);
         });
 
+        let unlocked = false;
         function close() {
             overlay.classList.remove('open');
             setTimeout(() => overlay.remove(), 160);
             document.removeEventListener('keydown', onKey);
+            if (!unlocked) { unlocked = true; window.scrollLock?.unlock(); }
             try { onConfirm?.(Array.from(selected)); } catch (err) { console.error(err); }
         }
         function onKey(e) {

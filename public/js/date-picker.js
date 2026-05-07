@@ -96,6 +96,7 @@ window.datePicker = (() => {
         document.body.appendChild(overlay);
         // delay so transition catches
         requestAnimationFrame(() => overlay.classList.add('open'));
+        window.scrollLock?.lock();
 
         // ---------- rendering ----------
         function render() {
@@ -261,10 +262,12 @@ window.datePicker = (() => {
         });
 
         // ---------- close / save ----------
+        let unlocked = false;
         function close() {
             overlay.classList.remove('open');
             setTimeout(() => overlay.remove(), 160);
             document.removeEventListener('keydown', onKey);
+            if (!unlocked) { unlocked = true; window.scrollLock?.unlock(); }
         }
         function save() {
             const dt = new Date(state.year, state.month, state.day, state.hours, state.minutes, 0, 0);

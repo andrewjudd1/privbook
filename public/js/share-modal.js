@@ -185,11 +185,14 @@ window.shareModal = (() => {
 
         document.body.appendChild(overlay);
         requestAnimationFrame(() => overlay.classList.add('open'));
+        window.scrollLock?.lock();
 
+        let unlocked = false;
         function close() {
             overlay.classList.remove('open');
             setTimeout(() => overlay.remove(), 160);
             document.removeEventListener('keydown', onKey);
+            if (!unlocked) { unlocked = true; window.scrollLock?.unlock(); }
         }
         function onKey(e) { if (e.key === 'Escape') close(); }
         document.addEventListener('keydown', onKey);

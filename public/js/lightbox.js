@@ -30,14 +30,18 @@ window.lightbox = (() => {
         urls = Array.isArray(list) ? list.slice() : [list];
         index = Math.max(0, Math.min(startIndex | 0, urls.length - 1));
         render();
+        const wasOpen = els.root.classList.contains('open');
         els.root.classList.add('open');
+        if (!wasOpen) window.scrollLock?.lock();
     }
 
     function close() {
+        if (!els.root.classList.contains('open')) return;
         els.root.classList.remove('open');
         els.img.src = '';
         urls = [];
         index = 0;
+        window.scrollLock?.unlock();
     }
 
     function go(delta) {
