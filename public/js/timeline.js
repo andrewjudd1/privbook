@@ -20,9 +20,6 @@
         els.loadMore = document.getElementById('load-more-row');
         els.greeting = document.getElementById('greeting');
         els.signOut = document.getElementById('signout-btn');
-        els.lightbox = document.getElementById('lightbox');
-        els.lightboxImg = document.getElementById('lightbox-img');
-        els.lightboxClose = document.getElementById('lightbox-close');
         els.booksStrip = document.getElementById('books-strip');
     }
 
@@ -82,13 +79,14 @@
 
         const visibleMax = layout === 'grid' && n > 9 ? 9 : (layout === 'collage' && n > 5 ? 5 : n);
         const visible = post.images.slice(0, visibleMax);
+        const allUrls = post.images.map((im) => im.url);
 
         visible.forEach((img, i) => {
             const el = document.createElement('img');
             el.src = img.url;
             el.alt = '';
             el.loading = 'lazy';
-            el.addEventListener('click', () => openLightbox(img.url));
+            el.addEventListener('click', () => window.lightbox.open(allUrls, i));
             if (i === visibleMax - 1 && n > visibleMax) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'more-overlay';
@@ -301,15 +299,6 @@
         }
     }
 
-    function openLightbox(url) {
-        els.lightboxImg.src = url;
-        els.lightbox.classList.add('open');
-    }
-    function closeLightbox() {
-        els.lightbox.classList.remove('open');
-        els.lightboxImg.src = '';
-    }
-
     function ensureEmptyState() {
         if (els.timeline.querySelector('.post')) return;
         els.timeline.innerHTML = '';
@@ -394,14 +383,6 @@
             window.location.href = '/';
         });
 
-        els.lightboxClose.addEventListener('click', closeLightbox);
-        els.lightbox.addEventListener('click', (e) => {
-            if (e.target === els.lightbox) closeLightbox();
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && els.lightbox.classList.contains('open')) closeLightbox();
-        });
-
         // composer wiring
         window.composer.init();
 
@@ -430,5 +411,5 @@
         attachInfiniteScroll();
     }
 
-    window.addEventListener('auth-ready', start);
+    window.privbook.onAuthReady(start);
 })();

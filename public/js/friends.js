@@ -327,5 +327,5 @@
         loadReceived();
     }
 
-    window.addEventListener('auth-ready', start);
+    window.privbook.onAuthReady(start);
 })();

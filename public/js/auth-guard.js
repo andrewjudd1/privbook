@@ -88,9 +88,19 @@
 
         if (isAuthRequired && signedIn) {
             syncDisplayName();
+            // Set the flag BEFORE dispatching so late-binding listeners
+            // (defer-script microtask race) can detect we already fired.
+            window.privbook = window.privbook || {};
+            window.privbook.authReady = true;
             window.dispatchEvent(new CustomEvent('auth-ready'));
         }
     }
+
+    window.privbook = window.privbook || {};
+    window.privbook.onAuthReady = function (fn) {
+        if (window.privbook.authReady) fn();
+        else window.addEventListener('auth-ready', fn, { once: true });
+    };
 
     function goSignIn() {
         const target = encodeURIComponent(path + window.location.search);

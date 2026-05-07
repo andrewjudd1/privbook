@@ -6,6 +6,7 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 
 import config from './config.js';
+
 import { requireAuth, withUser } from './middleware/auth.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import meRoutes from './routes/me.js';
@@ -87,15 +88,7 @@ app.get('/friends', pageHandler('friends.html'));
 app.get('/invite/:token', pageHandler('invite.html'));
 app.get('/friend/:userId', pageHandler('friend.html'));
 
-// Static assets (CSS, client JS, image uploads)
-app.use(
-    '/uploads',
-    express.static(config.uploadsDir, {
-        maxAge: '7d',
-        immutable: false,
-        fallthrough: false,
-    })
-);
+// Static assets (CSS, client JS). Image uploads live on S3.
 app.use(
     express.static(config.publicDir, {
         maxAge: config.env === 'production' ? '1h' : 0,

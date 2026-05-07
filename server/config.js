@@ -15,7 +15,6 @@ const config = {
     env: process.env.NODE_ENV ?? 'development',
     rootDir: path.resolve(__dirname, '..'),
     publicDir: path.resolve(__dirname, '..', 'public'),
-    uploadsDir: path.resolve(__dirname, '..', 'uploads'),
 
     publicBaseUrl: process.env.PUBLIC_BASE_URL || '',
 
@@ -41,6 +40,14 @@ const config = {
         maxBytes: parseInt(process.env.MAX_UPLOAD_MB ?? '12', 10) * 1024 * 1024,
         maxImagesPerPost: parseInt(process.env.MAX_IMAGES_PER_POST ?? '10', 10),
         allowedMime: new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif']),
+    },
+
+    s3: {
+        region: process.env.S3_REGION ?? 'us-east-1',
+        bucket: process.env.S3_BUCKET ?? 'assets.influxcode.io',
+        prefix: process.env.S3_PREFIX ?? 'privbook',
+        accessKey: process.env.AWS_ACCESS_KEY,
+        secretKey: process.env.AWS_SECRET_KEY,
     },
 };
 

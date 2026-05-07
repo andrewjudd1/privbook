@@ -1,11 +1,16 @@
 import multer from 'multer';
 import sharp from 'sharp';
 import crypto from 'node:crypto';
-import path from 'node:path';
-import fs from 'node:fs/promises';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import config from './config.js';
 
-await fs.mkdir(config.uploadsDir, { recursive: true });
+const s3 = new S3Client({
+    region: config.s3.region,
+    credentials:
+        config.s3.accessKey && config.s3.secretKey
+            ? { accessKeyId: config.s3.accessKey, secretAccessKey: config.s3.secretKey }
+            : undefined,
+});
 
 export const uploadMiddleware = multer({
     storage: multer.memoryStorage(),
@@ -19,18 +24,19 @@ export const uploadMiddleware = multer({
     },
 });
 
+// Bucket names containing dots break virtual-hosted-style HTTPS, so use path-style.
+function publicUrlFor(key) {
+    return `https://s3.${config.s3.region}.amazonaws.com/${config.s3.bucket}/${key}`;
+}
+
 /**
  * Process an uploaded image: rotate via EXIF, resize to a sane max,
- * convert to webp, write to disk, return { storageKey, url, width, height }.
+ * convert to webp, upload to S3, return { storageKey, url, width, height }.
  */
 export async function processImage(buffer, userId) {
     const id = crypto.randomBytes(12).toString('hex');
-    const dir = path.join(config.uploadsDir, userId);
-    await fs.mkdir(dir, { recursive: true });
-
     const filename = `${id}.webp`;
-    const storageKey = path.join(userId, filename);
-    const fullPath = path.join(dir, filename);
+    const storageKey = `${config.s3.prefix}/${userId}/${filename}`;
 
     const pipeline = sharp(buffer, { failOn: 'none' })
         .rotate()
@@ -43,21 +49,25 @@ export async function processImage(buffer, userId) {
         .webp({ quality: 86 });
 
     const { data, info } = await pipeline.toBuffer({ resolveWithObject: true });
-    await fs.writeFile(fullPath, data);
 
-    const url = config.publicBaseUrl
-        ? `${config.publicBaseUrl}/uploads/${storageKey}`
-        : `/uploads/${storageKey}`;
+    await s3.send(
+        new PutObjectCommand({
+            Bucket: config.s3.bucket,
+            Key: storageKey,
+            Body: data,
+            ContentType: 'image/webp',
+            CacheControl: 'public, max-age=31536000, immutable',
+        })
+    );
 
-    return { storageKey, url, width: info.width, height: info.height };
+    return { storageKey, url: publicUrlFor(storageKey), width: info.width, height: info.height };
 }
 
 export async function deleteStoredImage(storageKey) {
     if (!storageKey) return;
-    const full = path.join(config.uploadsDir, storageKey);
     try {
-        await fs.unlink(full);
+        await s3.send(new DeleteObjectCommand({ Bucket: config.s3.bucket, Key: storageKey }));
     } catch (err) {
-        if (err.code !== 'ENOENT') console.warn('[upload] delete failed:', err.message);
+        console.warn('[upload] delete failed:', err.message);
     }
 }

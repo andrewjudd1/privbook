@@ -4,13 +4,12 @@
 window.api = (() => {
     const API_BASE = window.__ENV__?.API_BASE || '';
 
-    async function token() {
+    async function token({ skipCache = false } = {}) {
         if (!window.Clerk?.session) throw new Error('Not authenticated');
-        return window.Clerk.session.getToken();
+        return window.Clerk.session.getToken(skipCache ? { skipCache: true } : undefined);
     }
 
     async function request(method, path, { body, params, isFormData } = {}) {
-        const t = await token();
         let url = API_BASE + path;
 
         if (params) {
@@ -22,16 +21,26 @@ window.api = (() => {
             if (s) url += '?' + s;
         }
 
-        const headers = { Authorization: 'Bearer ' + t };
-        const opts = { method, headers };
-        if (body && !isFormData) {
-            headers['Content-Type'] = 'application/json';
-            opts.body = JSON.stringify(body);
-        } else if (body && isFormData) {
-            opts.body = body;
+        const send = async (skipCache) => {
+            const t = await token({ skipCache });
+            const headers = { Authorization: 'Bearer ' + t };
+            const opts = { method, headers };
+            if (body && !isFormData) {
+                headers['Content-Type'] = 'application/json';
+                opts.body = JSON.stringify(body);
+            } else if (body && isFormData) {
+                opts.body = body;
+            }
+            return fetch(url, opts);
+        };
+
+        let res = await send(false);
+        // Right after sign-in, Clerk's cached token can briefly be stale —
+        // refresh once before surfacing the error.
+        if (res.status === 401 && window.Clerk?.session) {
+            res = await send(true);
         }
 
-        const res = await fetch(url, opts);
         const ct = res.headers.get('content-type') || '';
         let data = null;
         if (ct.includes('application/json')) {
