@@ -6,6 +6,7 @@ window.lightbox = (() => {
     let touchStartY = null;
     let wheelAccum = 0;
     let wheelLocked = false;
+    let wheelLastDir = 0;
     let wheelResetTimer = null;
     let initialised = false;
 
@@ -67,8 +68,9 @@ window.lightbox = (() => {
         wheelResetTimer = setTimeout(() => {
             wheelAccum = 0;
             wheelLocked = false;
+            wheelLastDir = 0;
             wheelResetTimer = null;
-        }, 180);
+        }, 90);
     }
 
     function onWheel(e) {
@@ -76,10 +78,18 @@ window.lightbox = (() => {
         if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
         e.preventDefault();
         scheduleWheelReset();
+
+        const dir = e.deltaX > 0 ? 1 : -1;
+        if (wheelLocked && wheelLastDir !== 0 && dir !== wheelLastDir) {
+            wheelLocked = false;
+            wheelAccum = 0;
+        }
         if (wheelLocked) return;
+
         wheelAccum += e.deltaX;
-        if (Math.abs(wheelAccum) >= 80) {
+        if (Math.abs(wheelAccum) >= 35) {
             go(wheelAccum > 0 ? 1 : -1);
+            wheelLastDir = wheelAccum > 0 ? 1 : -1;
             wheelAccum = 0;
             wheelLocked = true;
         }
