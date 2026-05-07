@@ -1,0 +1,26 @@
+{
+  "name": "privbook",
+  "version": "1.0.0",
+  "description": "A private personal timeline — your own quiet corner of the internet.",
+  "type": "module",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "migrate": "node server/migrate.js"
+  },
+  "dependencies": {
+    "@clerk/express": "^1.3.34",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.4",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "multer": "^2.0.1",
+    "pg": "^8.13.1",
+    "sharp": "^0.33.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · privbook</title>
+    <link rel="icon" type="image/webp" href="/privbook_logo.webp">
+    <link rel="apple-touch-icon" href="/privbook_logo.webp">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script type="text/javascript">
+        window.__ENV__ = { CLERK_PUBLISHABLE_KEY: '{{CLERK_PUBLISHABLE_KEY}}', API_BASE: '{{API_BASE}}' };
+    </script>
+    <script async crossorigin="anonymous"
+        data-clerk-publishable-key="{{CLERK_PUBLISHABLE_KEY}}"
+        src="{{CLERK_JS_URL}}"
+        type="text/javascript"></script>
+    <script defer src="/js/auth-guard.js"></script>
+    <script defer src="/js/signin.js"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <header class="site-header">
+            <div class="site-header-inner">
+                <a href="/" class="brand" style="text-decoration: none;">
+                    <span class="brand-mark"></span>
+                    <span>privbook</span>
+                </a>
+            </div>
+        </header>
+
+        <main>
+            <div class="signin-wrap">
+                <div class="signin-card">
+                    <h2 class="signin-title">Welcome home.</h2>
+                    <p class="signin-sub">Sign in to open your private timeline.</p>
+                    <div id="clerk-mount"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <p>privbook — a small private place.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

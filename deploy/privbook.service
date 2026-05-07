@@ -1,0 +1,17 @@
+[Unit]
+Description=privbook (private personal timeline)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/influxcode/privbook
+EnvironmentFile=/home/ubuntu/influxcode/privbook/.env
+ExecStart=/usr/bin/node server/server.js
+Restart=on-failure
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

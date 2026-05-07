@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend · privbook</title>
+    <link rel="icon" type="image/webp" href="/privbook_logo.webp">
+    <link rel="apple-touch-icon" href="/privbook_logo.webp">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script type="text/javascript">
+        window.__ENV__ = { CLERK_PUBLISHABLE_KEY: '{{CLERK_PUBLISHABLE_KEY}}', API_BASE: '{{API_BASE}}' };
+    </script>
+    <script async crossorigin="anonymous"
+        data-clerk-publishable-key="{{CLERK_PUBLISHABLE_KEY}}"
+        src="{{CLERK_JS_URL}}"
+        type="text/javascript"></script>
+    <script defer src="/js/toast.js"></script>
+    <script defer src="/js/api.js"></script>
+    <script defer src="/js/auth-guard.js"></script>
+    <script defer src="/js/friend.js"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <header class="site-header">
+            <div class="site-header-inner">
+                <a href="/timeline" class="brand" style="text-decoration: none;">
+                    <span class="brand-mark"></span>
+                    <span>privbook</span>
+                </a>
+                <div class="header-actions">
+                    <a class="btn btn-ghost btn-sm" href="/friends">Friends</a>
+                    <a class="btn btn-ghost btn-sm" href="/timeline">My timeline</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="friend-hero">
+                <h1 class="page-title" id="friend-title">…</h1>
+                <p class="page-sub" id="friend-sub"></p>
+            </section>
+
+            <section class="books-strip" id="books-strip" aria-label="Books"></section>
+
+            <section class="timeline" id="timeline" aria-live="polite"></section>
+
+            <div class="loading-row" id="load-more-row" hidden>
+                <span class="spinner"></span>
+                <span>loading more…</span>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <p>privbook — a small private place.</p>
+        </footer>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+        <button type="button" class="close" id="lightbox-close" aria-label="Close">×</button>
+        <img id="lightbox-img" alt="" />
+    </div>
+
+    <div class="toast-stack" id="toast-stack"></div>
+</body>
+
+</html>

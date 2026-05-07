@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>privbook — your quiet timeline</title>
+    <link rel="icon" type="image/webp" href="/privbook_logo.webp">
+    <link rel="apple-touch-icon" href="/privbook_logo.webp">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script type="text/javascript">
+        window.__ENV__ = { CLERK_PUBLISHABLE_KEY: '{{CLERK_PUBLISHABLE_KEY}}', API_BASE: '{{API_BASE}}' };
+    </script>
+    <script async crossorigin="anonymous"
+        data-clerk-publishable-key="{{CLERK_PUBLISHABLE_KEY}}"
+        src="{{CLERK_JS_URL}}"
+        type="text/javascript"></script>
+    <script defer src="/js/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <header class="site-header">
+            <div class="site-header-inner">
+                <div class="brand">
+                    <span class="brand-mark"></span>
+                    <span>privbook</span>
+                </div>
+                <div class="header-actions">
+                    <a href="/signin" class="btn btn-ghost btn-sm">Sign in</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="landing-hero">
+                <img src="/privbook_logo.webp" alt="privbook" class="landing-logo" width="280" height="280">
+                <h1>A quiet place for <em>your</em> story.</h1>
+                <p class="lead">
+                    Write the small moments. Save the photos that matter. No followers, no feed, no noise —
+                    just your own private timeline, kept warm for the years to come.
+                </p>
+                <a href="/signin" class="btn btn-primary btn-lg">Open your timeline</a>
+            </section>
+
+            <section class="landing-pillars">
+                <div class="landing-pillar">
+                    <h3>Just for you</h3>
+                    <p>Every post is private. Nothing is shared, nothing is public, no one else can see it.</p>
+                </div>
+                <div class="landing-pillar">
+                    <h3>Words and pictures</h3>
+                    <p>Write a note. Add a photo. Make a collage of a Sunday afternoon. Whatever the moment needs.</p>
+                </div>
+                <div class="landing-pillar">
+                    <h3>Yours to keep</h3>
+                    <p>A timeline that grows quietly with you — a softer place to remember.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <p>privbook — a small private place. © 2026</p>
+        </footer>
+    </div>
+</body>
+
+</html>
