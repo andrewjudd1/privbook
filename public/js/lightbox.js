@@ -7,6 +7,7 @@ window.lightbox = (() => {
     let wheelAccum = 0;
     let wheelLocked = false;
     let wheelLastDir = 0;
+    let wheelLastTime = 0;
     let wheelResetTimer = null;
     let initialised = false;
 
@@ -74,24 +75,37 @@ window.lightbox = (() => {
             wheelLocked = false;
             wheelLastDir = 0;
             wheelResetTimer = null;
-        }, 90);
+        }, 60);
     }
 
     function onWheel(e) {
         if (urls.length < 2) return;
         if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
         e.preventDefault();
-        scheduleWheelReset();
+
+        const now = performance.now();
+        const gap = now - wheelLastTime;
+        wheelLastTime = now;
+
+        // Gap > 40ms means user lifted fingers; treat as a fresh swipe.
+        // Trackpad momentum events fire ~16ms apart, so gaps above that
+        // signal a new gesture.
+        if (gap > 40) {
+            wheelLocked = false;
+            wheelAccum = 0;
+        }
 
         const dir = e.deltaX > 0 ? 1 : -1;
         if (wheelLocked && wheelLastDir !== 0 && dir !== wheelLastDir) {
             wheelLocked = false;
             wheelAccum = 0;
         }
+
+        scheduleWheelReset();
         if (wheelLocked) return;
 
         wheelAccum += e.deltaX;
-        if (Math.abs(wheelAccum) >= 35) {
+        if (Math.abs(wheelAccum) >= 30) {
             go(wheelAccum > 0 ? 1 : -1);
             wheelLastDir = wheelAccum > 0 ? 1 : -1;
             wheelAccum = 0;
