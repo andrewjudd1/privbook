@@ -552,14 +552,10 @@ main {
 }
 .post-images.layout-collage.count-many img:nth-child(1) { grid-row: span 2; }
 
-.post-layout-edit {
-    display: flex;
-    justify-content: flex-end;
-    padding: 0.55rem 1.1rem 0;
-}
-.post-layout-edit .layout-select {
-    font-size: 0.8rem;
-    padding: 0.3em 0.65em;
+.post-layout-select {
+    font-size: 0.78rem;
+    padding: 0.25em 0.55em;
+    max-width: 9.5rem;
 }
 
 .more-overlay {

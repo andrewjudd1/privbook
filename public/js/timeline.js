@@ -137,6 +137,9 @@
 
         head.appendChild(av);
         head.appendChild(meta);
+        if ((post.images?.length ?? 0) > 1) {
+            head.appendChild(renderLayoutEditor(post, article));
+        }
         head.appendChild(menu);
         article.appendChild(head);
 
@@ -149,10 +152,6 @@
 
         const images = renderImages(post);
         if (images) article.appendChild(images);
-
-        if ((post.images?.length ?? 0) > 1) {
-            article.appendChild(renderLayoutEditor(post, article));
-        }
 
         const books = renderBooks(post, article);
         article.appendChild(books);
@@ -168,11 +167,8 @@
     ];
 
     function renderLayoutEditor(post, article) {
-        const wrap = document.createElement('div');
-        wrap.className = 'post-layout-edit';
-
         const sel = document.createElement('select');
-        sel.className = 'layout-select';
+        sel.className = 'layout-select post-layout-select';
         sel.title = 'How to lay out these photos';
         for (const [val, label] of LAYOUT_OPTIONS) {
             const opt = document.createElement('option');
@@ -202,8 +198,7 @@
             }
         });
 
-        wrap.appendChild(sel);
-        return wrap;
+        return sel;
     }
 
     function renderBooks(post, article) {
