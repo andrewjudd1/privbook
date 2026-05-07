@@ -272,13 +272,13 @@ main {
     .landing-card { padding: 2.5rem 2rem; }
 }
 
-/* ----------  signin  ---------- */
+/* ----------  signin (mobile-first)  ---------- */
 .signin-wrap {
     min-height: calc(100dvh - 6rem);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 1.25rem 0.5rem;
 }
 .signin-card {
     width: 100%;
@@ -287,18 +287,30 @@ main {
     border: 1px solid var(--line-soft);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
-    padding: 2rem 1.75rem 1.5rem;
+    padding: 1.5rem 1.1rem 1.25rem;
 }
 .signin-card .signin-title {
     text-align: center;
-    margin-bottom: 0.25rem;
+    font-size: clamp(1.4rem, 4.5vw, 1.75rem);
+    margin: 0 0 0.25rem;
 }
 .signin-card .signin-sub {
     text-align: center;
     color: var(--muted);
-    margin-bottom: 1.5rem;
+    font-size: clamp(0.95rem, 2.4vw, 1rem);
+    margin-bottom: 1.25rem;
 }
-#clerk-mount { min-height: 360px; }
+#clerk-mount {
+    min-height: 360px;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+@media (min-width: 600px) {
+    .signin-wrap { padding: 2rem 1rem; }
+    .signin-card { padding: 2rem 1.75rem 1.5rem; }
+    .signin-card .signin-sub { margin-bottom: 1.5rem; }
+}
 
 /* ----------  composer  ---------- */
 .composer {
@@ -1228,8 +1240,6 @@ main {
     .post-body { padding: 0.4rem 0.95rem 1rem; font-size: 1rem; }
     .post-books { padding: 0.55rem 0.95rem 0.85rem; }
     .post-images.layout-collage { height: 300px; }
-
-    .signin-card { padding: 1.5rem 1.1rem 1.1rem; }
 
     .friends-hero { padding: 0.25rem 0 0.75rem; }
     .page-title { font-size: 1.6rem; }
