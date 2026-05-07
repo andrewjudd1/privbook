@@ -4,6 +4,9 @@ window.lightbox = (() => {
     let index = 0;
     let touchStartX = null;
     let touchStartY = null;
+    let wheelAccum = 0;
+    let wheelLocked = false;
+    let wheelResetTimer = null;
     let initialised = false;
 
     function pickEls() {
@@ -59,6 +62,29 @@ window.lightbox = (() => {
         go(dx < 0 ? 1 : -1);
     }
 
+    function scheduleWheelReset() {
+        if (wheelResetTimer) clearTimeout(wheelResetTimer);
+        wheelResetTimer = setTimeout(() => {
+            wheelAccum = 0;
+            wheelLocked = false;
+            wheelResetTimer = null;
+        }, 180);
+    }
+
+    function onWheel(e) {
+        if (urls.length < 2) return;
+        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+        e.preventDefault();
+        scheduleWheelReset();
+        if (wheelLocked) return;
+        wheelAccum += e.deltaX;
+        if (Math.abs(wheelAccum) >= 80) {
+            go(wheelAccum > 0 ? 1 : -1);
+            wheelAccum = 0;
+            wheelLocked = true;
+        }
+    }
+
     function init() {
         pickEls();
         if (!els.root) return;
@@ -80,6 +106,7 @@ window.lightbox = (() => {
 
         els.root.addEventListener('touchstart', onTouchStart, { passive: true });
         els.root.addEventListener('touchend', onTouchEnd);
+        els.root.addEventListener('wheel', onWheel, { passive: false });
     }
 
     document.addEventListener('DOMContentLoaded', init);
