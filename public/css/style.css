@@ -693,6 +693,8 @@ main {
     color: #fff; font-size: 24px;
     cursor: pointer;
     line-height: 1;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 .lightbox-nav {
     position: absolute;
@@ -711,6 +713,9 @@ main {
     justify-content: center;
     padding: 0 0 4px;
     user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 .lightbox-nav.prev { left: max(12px, env(safe-area-inset-left)); }
 .lightbox-nav.next { right: max(12px, env(safe-area-inset-right)); }
